@@ -1,0 +1,51 @@
+{
+    "name": "hungthai1401/grumphp-pint-task",
+    "description": "Laravel Pint task runner from GrumPHP",
+    "keywords": [
+        "laravel",
+        "laravel-framework",
+        "grumphp",
+        "grumphp-task",
+        "laravel-pint",
+        "php-library",
+        "grumphp-pint-task",
+        "refactoring"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thai Nguyen Hung",
+            "email": "hungthai1401.it@gmail.com",
+            "homepage": "https://github.com/hungthai1401",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/hungthai1401/grumphp-pint-task/issues"
+    },
+    "require": {
+        "php": ">=8.0",
+        "phpro/grumphp": "^1.13",
+        "laravel/pint": "^1.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "HT\\GrumPhpPintTask\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "pcf": "vendor/bin/php-cs-fixer fix --verbose"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
