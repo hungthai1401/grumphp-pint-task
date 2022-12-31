@@ -20,15 +20,21 @@ configurable parameters:
 
 ````yml
 grumphp:
-    tasks:
-      laravel_pint:
-            files_on_pre_commit: false
-            paths: ['src']
-    extensions:
-        - HT\GrumPhpPintTask\ExtensionLoader
+  tasks:
+    laravel_pint:
+      config: 'pint.json'
+      files_on_pre_commit: false
+      paths: ['src']
+  extensions:
+    - HT\GrumPhpPintTask\ExtensionLoader
 ````
 
 By default, this won't update your code, you need to do it manually.
+
+#### config
+`Default: 'pint.json'`
+
+If you want to use a different config file than the default `pint.json`, you can specify your custom config file location with this option.
 
 #### files_on_pre_commit
 

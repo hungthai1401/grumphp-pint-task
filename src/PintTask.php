@@ -16,14 +16,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PintTask extends AbstractExternalTask
 {
+    private const DEFAULT_CONFIG = 'pint.json';
+
     public static function getConfigurableOptions(): OptionsResolver
     {
         $resolver = new OptionsResolver();
         $resolver->setDefaults([
+            'config' => self::DEFAULT_CONFIG,
             'files_on_pre_commit' => false,
             'paths' => [],
         ]);
 
+        $resolver->addAllowedTypes('config', ['null', 'string']);
         $resolver->addAllowedTypes('files_on_pre_commit', ['bool']);
         $resolver->addAllowedTypes('paths', ['array']);
 
@@ -39,6 +43,10 @@ class PintTask extends AbstractExternalTask
     {
         assert($context instanceof GitPreCommitContext || $context instanceof RunContext);
         $config = $this->getConfig()->getOptions();
+        if (! file_exists($config['config'])) {
+            return TaskResult::createFailed($this, $context, 'Your Laravel Pint config does not exists!');
+        }
+
         $files = $context->getFiles()->extensions(['php']);
         if (0 === \count($files) && $config['files_on_pre_commit']) {
             return TaskResult::createSkipped($this, $context);
@@ -46,7 +54,8 @@ class PintTask extends AbstractExternalTask
 
         $arguments = $this->processBuilder->createArgumentsForCommand('pint');
         $arguments->add('--test');
-        $this->addPaths($arguments, $context, $files, $this->getConfig()->getOptions());
+        $arguments->addOptionalArgumentWithSeparatedValue('--config', $config['config']);
+        $this->addPaths($arguments, $context, $files, $config);
         $process = $this->processBuilder->buildProcess($arguments);
         $process->run();
 
@@ -58,7 +67,7 @@ class PintTask extends AbstractExternalTask
                 $this->formatter->format($process),
                 PHP_EOL,
                 PHP_EOL,
-                'Please fix the Laravel Pint errors by `./vendor/bin/pint {PATH}` and try again.'
+                sprintf('Please fix the Laravel Pint errors by `./vendor/bin/pint --config %s {PATH}` and try again.', $config['config'])
             ));
         }
 
